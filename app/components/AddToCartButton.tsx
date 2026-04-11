@@ -16,7 +16,11 @@ export function AddToCartButton({
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => (
+      {(fetcher: FetcherWithComponents<any>) => {
+        const isLoading = fetcher.state !== 'idle';
+        const isDisabled = disabled ?? isLoading;
+
+        return (
         <>
           <input
             name="analytics"
@@ -24,14 +28,18 @@ export function AddToCartButton({
             value={JSON.stringify(analytics)}
           />
           <button
+            aria-busy={isLoading}
+            className="product-add-to-cart-button"
+            data-loading={isLoading ? 'true' : 'false'}
             type="submit"
             onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
+            disabled={isDisabled}
           >
-            {children}
+            <span>{children}</span>
           </button>
         </>
-      )}
+        );
+      }}
     </CartForm>
   );
 }
