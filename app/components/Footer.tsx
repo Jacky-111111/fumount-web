@@ -2,6 +2,8 @@ import {Suspense} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 
+type FooterLink = {id: string; title: string; url: string; external: boolean};
+
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
   header: HeaderQuery;
@@ -25,7 +27,7 @@ export function Footer({
             .map((item) =>
               normalizeMenuLink({item, primaryDomainUrl, publicStoreDomain}),
             )
-            .filter((item) => Boolean(item));
+            .filter(isFooterLink);
 
           return (
             <footer className="footer" aria-labelledby="footer-brand-title">
@@ -71,7 +73,7 @@ function FooterMenuColumn({
   links,
 }: {
   title: string;
-  links: Array<{id: string; title: string; url: string; external: boolean}>;
+  links: ReadonlyArray<FooterLink>;
 }) {
   return (
     <section className="footer-column">
@@ -101,7 +103,7 @@ function normalizeMenuLink({
   item: NonNullable<FooterQuery['menu']>['items'][number];
   primaryDomainUrl?: string;
   publicStoreDomain: string;
-}) {
+}): FooterLink | null {
   if (!item.url) return null;
   const isInternal =
     item.url.includes('myshopify.com') ||
@@ -114,6 +116,10 @@ function normalizeMenuLink({
     url,
     external: !url.startsWith('/'),
   };
+}
+
+function isFooterLink(item: FooterLink | null): item is FooterLink {
+  return item !== null;
 }
 
 const SUPPORT_LINKS = [
