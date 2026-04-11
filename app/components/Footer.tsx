@@ -16,64 +16,133 @@ export function Footer({
   return (
     <Suspense>
       <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
-          </footer>
-        )}
+        {(footer) => {
+          const menu = footer?.menu ?? FALLBACK_FOOTER_MENU;
+          const primaryDomainUrl = header.shop.primaryDomain?.url;
+          const shopName = header.shop.name || 'Fumount';
+
+          const shopLinks = menu.items
+            .map((item) =>
+              normalizeMenuLink({item, primaryDomainUrl, publicStoreDomain}),
+            )
+            .filter((item) => Boolean(item));
+
+          return (
+            <footer className="footer" aria-labelledby="footer-brand-title">
+              <div className="footer-container">
+                <section className="footer-brand">
+                  <p className="footer-overline">FUMOUNT</p>
+                  <h2 id="footer-brand-title">{shopName}</h2>
+                  <p>
+                    Luxury incense crafted for modern rituals, intentional living,
+                    and a calmer atmosphere.
+                  </p>
+                </section>
+
+                <FooterMenuColumn title="Shop" links={shopLinks} />
+                <FooterMenuColumn title="Support" links={SUPPORT_LINKS} />
+                <FooterMenuColumn title="Connect" links={CONNECT_LINKS} />
+              </div>
+
+              <div className="footer-legal">
+                <p>© {new Date().getFullYear()} Fumount. All rights reserved.</p>
+                <nav className="footer-legal-links" aria-label="Footer legal links">
+                  <NavLink prefetch="intent" to="/policies/privacy-policy">
+                    Privacy
+                  </NavLink>
+                  <NavLink prefetch="intent" to="/policies/terms-of-service">
+                    Terms
+                  </NavLink>
+                  <NavLink prefetch="intent" to="/policies/shipping-policy">
+                    Shipping
+                  </NavLink>
+                </nav>
+              </div>
+            </footer>
+          );
+        }}
       </Await>
     </Suspense>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-  publicStoreDomain,
+function FooterMenuColumn({
+  title,
+  links,
 }: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
-  publicStoreDomain: string;
+  title: string;
+  links: Array<{id: string; title: string; url: string; external: boolean}>;
 }) {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <section className="footer-column">
+      <h3>{title}</h3>
+      <nav role="navigation" className="footer-menu">
+        {links.map((link) =>
+          link.external ? (
+            <a href={link.url} key={link.id} rel="noopener noreferrer" target="_blank">
+              {link.title}
+            </a>
+          ) : (
+            <NavLink end key={link.id} prefetch="intent" to={link.url}>
+              {link.title}
+            </NavLink>
+          ),
+        )}
+      </nav>
+    </section>
   );
 }
 
-const FALLBACK_FOOTER_MENU = {
+function normalizeMenuLink({
+  item,
+  primaryDomainUrl,
+  publicStoreDomain,
+}: {
+  item: NonNullable<FooterQuery['menu']>['items'][number];
+  primaryDomainUrl?: string;
+  publicStoreDomain: string;
+}) {
+  if (!item.url) return null;
+  const isInternal =
+    item.url.includes('myshopify.com') ||
+    item.url.includes(publicStoreDomain) ||
+    (primaryDomainUrl ? item.url.includes(primaryDomainUrl) : false);
+  const url = isInternal ? new URL(item.url).pathname : item.url;
+  return {
+    id: item.id,
+    title: item.title,
+    url,
+    external: !url.startsWith('/'),
+  };
+}
+
+const SUPPORT_LINKS = [
+  {id: 'support-search', title: 'Search', url: '/search', external: false},
+  {id: 'support-account', title: 'Account', url: '/account', external: false},
+  {
+    id: 'support-contact',
+    title: 'Contact',
+    url: '/pages/contact',
+    external: false,
+  },
+] as const;
+
+const CONNECT_LINKS = [
+  {
+    id: 'connect-email',
+    title: 'hello@example.com',
+    url: 'mailto:hello@example.com',
+    external: true,
+  },
+  {
+    id: 'connect-instagram',
+    title: 'Instagram',
+    url: 'https://instagram.com',
+    external: true,
+  },
+] as const;
+
+const FALLBACK_FOOTER_MENU: NonNullable<FooterQuery['menu']> = {
   id: 'gid://shopify/Menu/199655620664',
   items: [
     {
@@ -114,16 +183,3 @@ const FALLBACK_FOOTER_MENU = {
     },
   ],
 };
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
-}

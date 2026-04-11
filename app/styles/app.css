@@ -289,21 +289,100 @@ button.reset:hover:not(:has(> *)) {
 * --------------------------------------------------
 */
 .footer {
-  background: var(--color-dark);
+  background: #141414;
+  border-top: 1px solid #262626;
+  color: #cfcfcf;
   margin-top: auto;
+  padding: 3rem 1.25rem 1.25rem;
+}
+
+.footer-container {
+  display: grid;
+  gap: 1.75rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin: 0 auto;
+  max-width: 1120px;
+  @media (min-width: 960px) {
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  }
+}
+
+.footer-brand h2 {
+  color: #f8f8f8;
+  font-size: 1.45rem;
+  margin: 0.2rem 0 0.75rem;
+}
+
+.footer-brand p {
+  color: #adadad;
+  margin: 0;
+  max-width: 38ch;
+}
+
+.footer-overline {
+  color: #8a8a8a;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.footer-column h3 {
+  color: #f1f1f1;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.85rem;
+  text-transform: uppercase;
 }
 
 .footer-menu {
-  justify-content: center;
   display: flex;
-  flex-wrap: wrap;
-  grid-gap: 1rem;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0;
 }
 
 .footer-menu a {
-  color: var(--color-light);
-  min-width: fit-content;
+  color: #c7c7c7;
+  text-decoration: none;
+}
+
+.footer-menu a:hover,
+.footer-menu a.active {
+  color: #fff;
+}
+
+.footer-legal {
+  align-items: center;
+  border-top: 1px solid #262626;
+  color: #999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin: 2rem auto 0;
+  max-width: 1120px;
+  padding-top: 1rem;
+}
+
+.footer-legal p {
+  margin: 0;
+}
+
+.footer-legal-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.footer-legal-links a {
+  color: #a9a9a9;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.footer-legal-links a:hover,
+.footer-legal-links a.active {
+  color: #fff;
 }
 
 /*
