@@ -28,7 +28,9 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    // Shopify Storefront API standard max page size is 250.
+    // This makes collection pages show as many products as possible before "Load more".
+    pageBy: 250,
   });
 
   if (!handle) {
@@ -80,7 +82,7 @@ export default function Collection() {
           <ProductItem
             key={product.id}
             product={product}
-            loading={index < 8 ? 'eager' : undefined}
+            loading={index < 12 ? 'eager' : undefined}
           />
         )}
       </PaginatedResourceSection>
