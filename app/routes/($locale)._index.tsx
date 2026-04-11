@@ -1,5 +1,6 @@
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale)._index';
+import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ProductPrice} from '~/components/ProductPrice';
 import heroBackground from '~/assets/background_1.png';
@@ -38,10 +39,7 @@ type FeaturedProduct = {
   intention: string;
   collection: 'Classic Series' | 'Artisan Series';
   image: string | null;
-  price?: {
-    amount: string;
-    currencyCode: string;
-  };
+  price?: MoneyV2;
   href: string;
 };
 
@@ -89,7 +87,7 @@ export default function Homepage() {
         <div className="fumount-hero-content">
           <p className="fumount-overline">FUMOUNT</p>
           <h1 id="fumount-hero-title">
-            (Dev) Luxury incense for sleep, focus, and inner ritual.
+            (Dev1) Luxury incense for sleep, focus, and inner ritual.
           </h1>
           <p className="fumount-hero-subheading">
             Rooted in Eastern wisdom. Designed for modern living.
@@ -238,10 +236,7 @@ type FeaturedProductsQueryResponse = {
         description: string;
         featuredImage: {url: string; altText: string | null} | null;
         priceRange: {
-          minVariantPrice: {
-            amount: string;
-            currencyCode: string;
-          };
+          minVariantPrice: MoneyV2;
         };
       }>;
     };
@@ -255,10 +250,7 @@ type FeaturedProductsQueryResponse = {
         description: string;
         featuredImage: {url: string; altText: string | null} | null;
         priceRange: {
-          minVariantPrice: {
-            amount: string;
-            currencyCode: string;
-          };
+          minVariantPrice: MoneyV2;
         };
       }>;
     };

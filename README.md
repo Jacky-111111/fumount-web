@@ -1,60 +1,77 @@
-# Hydrogen template: Skeleton
+# Fumount Headless Storefront
 
-Hydrogen is Shopify’s stack for headless commerce. Hydrogen is designed to dovetail with [Remix](https://remix.run/), Shopify’s full stack web framework. This template contains a **minimal setup** of components, queries and tooling to get started with Hydrogen.
+This repository contains the Hydrogen storefront for the **Fumount Shopify account** (`fumount.com`).
 
-[Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
-[Get familiar with Remix](https://remix.run/docs/en/v1)
+## About Fumount
 
-## What's included
+Fumount is a luxury incense brand rooted in Eastern wisdom and designed for modern ritual living.  
+The brand focuses on premium botanicals, small-batch craftsmanship, and calm, refined sensory experiences.
 
-- Remix
-- Hydrogen
-- Oxygen
-- Vite
-- Shopify CLI
-- ESLint
-- Prettier
-- GraphQL generator
-- TypeScript and JavaScript flavors
-- Minimal setup of components and routes
+## Live URL
 
-## Getting started
+Current accessible storefront URL:
 
-**Requirements:**
+- [https://fumount-0ef55f8c404167a921f4.o2.myshopify.dev/](https://fumount-0ef55f8c404167a921f4.o2.myshopify.dev/)
 
-- Node.js version 18.0.0 or higher
+## Tech Stack
 
-```bash
-npm create @shopify/hydrogen@latest
-```
+- Shopify Hydrogen
+- React Router
+- Shopify Storefront API
+- Shopify Oxygen
+- Tailwind CSS
+- TypeScript
 
-## Building for production
+## Local Development
 
-```bash
-npm run build
-```
+### Requirements
 
-## Local development
+- Node.js 22+ (or compatible with project engines)
+- npm
+- Shopify CLI access to the Fumount store
 
-启动本地开发服务器：
+### Install dependencies
 
 ```bash
-npm run dev
+npm install
 ```
 
-如果你想跳过 codegen，直接启动 Hydrogen：
+### Run locally (recommended)
+
+Use this if `npm run dev` gets stuck on codegen:
 
 ```bash
 npx shopify hydrogen dev
 ```
 
-部署到 Shopify Oxygen：
+### Run locally (project script)
+
+```bash
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Deploy to Shopify Oxygen
+
+Manual deploy:
 
 ```bash
 npx shopify hydrogen deploy
 ```
-（如需更新部署，再次运行上面的命令）
 
-## Setup for using Customer Account API (`/account` section)
+Typical production workflow:
 
-Follow step 1 and 2 of <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
+1. Commit and push changes to the production branch (usually `main`).
+2. If GitHub auto-deploy is connected in the Shopify Hydrogen channel, Oxygen deploys automatically.
+3. Otherwise, run `npx shopify hydrogen deploy` manually.
+
+## Customer Account API Notes
+
+If you use `/account` routes, complete the Customer Account API setup:
+
+- <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
