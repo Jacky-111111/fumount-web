@@ -89,7 +89,7 @@ export default function Homepage() {
         <div className="fumount-hero-content">
           <p className="fumount-overline">FUMOUNT</p>
           <h1 id="fumount-hero-title">
-            Luxury incense for sleep, focus, and inner ritual.
+            (Dev) Luxury incense for sleep, focus, and inner ritual.
           </h1>
           <p className="fumount-hero-subheading">
             Rooted in Eastern wisdom. Designed for modern living.

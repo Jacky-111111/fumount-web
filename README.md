@@ -41,6 +41,8 @@ npm run dev
 # 2) 跳过 codegen，直接启动
 npx shopify hydrogen dev
 ```
+npx shopify hydrogen deploy
+// 更新deploy
 
 ## Setup for using Customer Account API (`/account` section)
 
