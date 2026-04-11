@@ -38,6 +38,8 @@ npm run build
 
 ```bash
 npm run dev
+# 2) 跳过 codegen，直接启动
+npx shopify hydrogen dev
 ```
 
 ## Setup for using Customer Account API (`/account` section)

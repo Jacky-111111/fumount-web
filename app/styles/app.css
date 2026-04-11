@@ -6,6 +6,16 @@
   --header-height: 64px;
   --color-dark: #000;
   --color-light: #fff;
+  --fumount-bg: #f7f5f2;
+  --fumount-heading: #1a1a1a;
+  --fumount-body: #4a4a4a;
+  --fumount-link: #6e6e6e;
+  --fumount-link-hover: #2f3e34;
+  --fumount-border: #e8e5e0;
+  --fumount-primary: #2f3e34;
+  --fumount-primary-hover: #1f2a24;
+  --fumount-secondary-bg: #efede8;
+  --fumount-secondary-text: #2f3e34;
 }
 
 img {
@@ -416,36 +426,309 @@ button.reset:hover:not(:has(> *)) {
 * routes/__index
 * --------------------------------------------------
 */
-.featured-collection {
-  display: block;
-  margin-bottom: 2rem;
+.fumount-home {
+  background: var(--fumount-bg);
+  color: var(--fumount-body);
+  margin-bottom: 3rem;
+}
+
+.fumount-home p,
+.fumount-home li {
+  color: var(--fumount-body);
+  line-height: 1.7;
+}
+
+.fumount-home h1,
+.fumount-home h2,
+.fumount-home h3 {
+  color: var(--fumount-heading);
+  letter-spacing: 0.01em;
+}
+
+.fumount-home a {
+  color: var(--fumount-link);
+}
+
+.fumount-home a:hover {
+  color: var(--fumount-link-hover);
+}
+
+.fumount-overline {
+  color: var(--fumount-link);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.fumount-section {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 3.5rem 1.25rem;
+}
+
+.fumount-section-header {
+  margin-bottom: 1.75rem;
+}
+
+.fumount-section-header h2 {
+  font-size: clamp(1.75rem, 3vw, 2.45rem);
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.fumount-hero {
+  min-height: calc(100vh - var(--header-height));
   position: relative;
 }
 
-.featured-collection-image {
-  aspect-ratio: 1 / 1;
-  @media (min-width: 45em) {
-    aspect-ratio: 16 / 9;
-  }
-}
-
-.featured-collection img {
-  height: auto;
-  max-height: 100%;
+.fumount-hero-image {
+  height: calc(100vh - var(--header-height));
   object-fit: cover;
+  object-position: center;
+  width: 100%;
 }
 
-.recommended-products-grid {
+.fumount-hero-overlay {
+  background: linear-gradient(to right, rgba(20, 20, 20, 0.55), rgba(20, 20, 20, 0.1));
+  inset: 0;
+  position: absolute;
+}
+
+.fumount-hero-content {
+  inset: auto auto 10% 0;
+  max-width: 760px;
+  padding: 0 1.25rem;
+  position: absolute;
+}
+
+.fumount-hero-content h1,
+.fumount-hero-content .fumount-overline,
+.fumount-hero-subheading {
+  color: #f8f6f3;
+}
+
+.fumount-hero-content h1 {
+  font-size: clamp(2.1rem, 6vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  max-width: 14ch;
+}
+
+.fumount-hero-subheading {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  margin-bottom: 1.5rem;
+  max-width: 34ch;
+}
+
+.fumount-hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.fumount-btn {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.68rem 1.2rem;
+  text-decoration: none;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.fumount-btn-primary {
+  background: var(--fumount-primary);
+  color: #fff !important;
+}
+
+.fumount-btn-primary:hover {
+  background: var(--fumount-primary-hover);
+}
+
+.fumount-btn-secondary {
+  background: var(--fumount-secondary-bg);
+  border-color: var(--fumount-border);
+  color: var(--fumount-secondary-text) !important;
+}
+
+.fumount-intention-grid {
   display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: repeat(2, 1fr);
-  @media (min-width: 45em) {
-    grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.recommended-product img {
-  height: auto;
+.fumount-intention-card {
+  background: #fbfaf7;
+  border: 1px solid var(--fumount-border);
+  overflow: hidden;
+}
+
+.fumount-intention-card img {
+  aspect-ratio: 5 / 4;
+  border-radius: 0;
+  object-fit: cover;
+  width: 100%;
+}
+
+.fumount-intention-card div {
+  padding: 1rem;
+}
+
+.fumount-intention-card h3 {
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem;
+}
+
+.fumount-values-list {
+  border-top: 1px solid var(--fumount-border);
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.fumount-values-list li {
+  border-bottom: 1px solid var(--fumount-border);
+  font-size: 1.06rem;
+  list-style: none;
+  padding: 1rem 0;
+}
+
+.fumount-products-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.fumount-product-card {
+  background: #fbfaf7;
+  border: 1px solid var(--fumount-border);
+}
+
+.fumount-product-card img {
+  aspect-ratio: 3 / 4;
+  border-radius: 0;
+  object-fit: cover;
+  width: 100%;
+}
+
+.fumount-product-content {
+  padding: 1rem;
+}
+
+.fumount-product-collection {
+  color: var(--fumount-link);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+}
+
+.fumount-product-content h3 {
+  font-size: 1.2rem;
+  margin: 0 0 0.35rem;
+}
+
+.fumount-product-content p {
+  margin: 0;
+}
+
+.fumount-product-content .product-price {
+  color: var(--fumount-heading);
+  font-size: 0.95rem;
+  margin-top: 0.7rem;
+}
+
+.fumount-ritual-list {
+  border-top: 1px solid var(--fumount-border);
+  counter-reset: ritual-step;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.fumount-ritual-list li {
+  border-bottom: 1px solid var(--fumount-border);
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+  padding: 1.15rem 0;
+  @media (min-width: 768px) {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+}
+
+.fumount-ritual-list li::before {
+  color: var(--fumount-link);
+  content: counter(ritual-step, decimal-leading-zero);
+  counter-increment: ritual-step;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.fumount-ritual-list h3 {
+  margin: 0;
+}
+
+.fumount-story {
+  align-items: center;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  @media (min-width: 900px) {
+    grid-template-columns: 1.3fr 1fr;
+  }
+}
+
+.fumount-story-image {
+  aspect-ratio: 4 / 3;
+  border-radius: 0;
+  object-fit: cover;
+  width: 100%;
+}
+
+.fumount-story-content {
+  background: #fbfaf7;
+  border: 1px solid var(--fumount-border);
+  padding: 1.5rem;
+}
+
+.fumount-story-content h2 {
+  margin: 0 0 0.75rem;
+}
+
+.fumount-story-content p {
+  margin-bottom: 1.2rem;
+}
+
+.fumount-home-footer {
+  border-top: 1px solid var(--fumount-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem auto 0;
+  max-width: 1120px;
+  padding: 1.2rem 1.25rem 2rem;
+}
+
+.fumount-home-footer a {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /*
