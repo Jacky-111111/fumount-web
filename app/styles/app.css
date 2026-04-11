@@ -839,6 +839,76 @@ button.reset:hover:not(:has(> *)) {
   }
 }
 
+.collection-toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.collection-sort-form {
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.collection-sort-form label {
+  color: var(--fumount-link);
+  font-size: 0.9rem;
+}
+
+.collection-sort-form select {
+  background: #fff;
+  border: 1px solid var(--fumount-border);
+  border-radius: 999px;
+  color: var(--fumount-body);
+  font-size: 0.9rem;
+  padding: 0.38rem 0.8rem;
+}
+
+.collection-filters {
+  border-bottom: 1px solid var(--fumount-border);
+  border-top: 1px solid var(--fumount-border);
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+}
+
+.collection-filter-group h3 {
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.45rem;
+  text-transform: uppercase;
+}
+
+.collection-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.collection-filter-chip {
+  border: 1px solid var(--fumount-border);
+  border-radius: 999px;
+  color: var(--fumount-link);
+  display: inline-flex;
+  font-size: 0.84rem;
+  padding: 0.32rem 0.72rem;
+  text-decoration: none;
+}
+
+.collection-filter-chip:hover {
+  border-color: var(--fumount-primary);
+  color: var(--fumount-primary);
+}
+
+.collection-filter-chip.active {
+  background: var(--fumount-primary);
+  border-color: var(--fumount-primary);
+  color: #fff;
+}
+
 .products-grid {
   display: grid;
   grid-gap: 1.5rem;
