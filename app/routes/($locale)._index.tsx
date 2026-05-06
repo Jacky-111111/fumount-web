@@ -1,17 +1,21 @@
+import {useEffect, useState, type CSSProperties} from 'react';
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale)._index';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ProductPrice} from '~/components/ProductPrice';
-import heroBackground from '~/assets/background_1.png';
-import intentionsBackground from '~/assets/background_2.png';
-import storyBackground from '~/assets/background_3.png';
-import placeholderOne from '~/assets/product_placeholder_1.png';
-import placeholderTwo from '~/assets/product_placeholder_2.png';
-import placeholderThree from '~/assets/product_placeholder_3.png';
+
+const ASSET_BASE = '/fumount-design/images/';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Fumount | Home'}];
+  return [
+    {title: 'Fúmount | Home incense'},
+    {
+      name: 'description',
+      content:
+        'Luxury incense rituals rooted in Eastern wisdom and shaped for modern living.',
+    },
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -43,186 +47,312 @@ type FeaturedProduct = {
   href: string;
 };
 
-const featuredProducts: FeaturedProduct[] = [
+const fallbackProducts: FeaturedProduct[] = [
   {
-    title: 'Cloud Rest',
-    intention: 'Sleep ritual / evening calm',
+    title: 'HOOKED AZURE',
+    intention: 'A bright, mineral incense ritual.',
     collection: 'Classic Series',
-    image: placeholderOne,
+    image: `${ASSET_BASE}catalogue-1.png`,
     href: '/products/cloud-rest',
   },
   {
-    title: 'Inner Eye',
-    intention: 'Focus ritual / deep work',
+    title: 'EXOTIC - Heritage',
+    intention: 'Heritage botanicals for grounded focus.',
     collection: 'Classic Series',
-    image: placeholderTwo,
+    image: `${ASSET_BASE}catalogue-2.png`,
     href: '/products/inner-eye',
   },
   {
-    title: 'Red Thread',
-    intention: 'Connection ritual / intimate moments',
+    title: 'EXOTIC Paradise',
+    intention: 'A warm trail for intimate atmosphere.',
     collection: 'Artisan Series',
-    image: placeholderThree,
+    image: `${ASSET_BASE}catalogue-3.png`,
     href: '/products/red-thread',
+  },
+  {
+    title: 'HOOKED POUR HOMME',
+    intention: 'A composed ritual for evening clarity.',
+    collection: 'Artisan Series',
+    image: `${ASSET_BASE}catalogue-4.png`,
+    href: '/collections/all',
   },
 ];
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   const homepageProducts =
-    data.featuredProducts.length > 0 ? data.featuredProducts : featuredProducts;
+    data.featuredProducts.length > 0 ? data.featuredProducts : fallbackProducts;
 
   return (
-    <div className="home fumount-home">
+    <>
       {data.isShopLinked ? null : <MockShopNotice />}
-
-      <section className="fumount-hero" aria-labelledby="fumount-hero-title">
-        <img
-          className="fumount-hero-image"
-          src={heroBackground}
-          alt="Premium incense ritual atmosphere"
-          loading="eager"
-        />
-        <div className="fumount-hero-overlay" />
-        <div className="fumount-hero-content">
-          <p className="fumount-overline">FUMOUNT</p>
-          <h1 id="fumount-hero-title">
-            (Dev1) Luxury incense for sleep, focus, and inner ritual.
-          </h1>
-          <p className="fumount-hero-subheading">
-            Rooted in Eastern wisdom. Designed for modern living.
-          </p>
-          <div className="fumount-hero-cta-group">
-            <Link className="fumount-btn fumount-btn-primary" to="/collections/all">
-              Shop Rituals
-            </Link>
-            <Link className="fumount-btn fumount-btn-secondary" to="/pages/about">
-              Explore the Brand
+      <main id="collections">
+        <section className="hero-slide" aria-label="Featured campaign">
+          <div className="hero-slide__media">
+            <img
+              src={`${ASSET_BASE}rue-home-1.png`}
+              alt=""
+              width="1280"
+              height="1600"
+              decoding="async"
+            />
+          </div>
+          <div className="hero-slide__content">
+            <p className="hero-slide__kicker">New campaign</p>
+            <h1 className="hero-slide__title">The incense collection</h1>
+            <Link className="btn-shop" to="#shop">
+              Shop now
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="fumount-section" aria-labelledby="featured-intentions">
-        <header className="fumount-section-header">
-          <p className="fumount-overline">Intentions</p>
-          <h2 id="featured-intentions">Featured intentions</h2>
-        </header>
-        <div className="fumount-intention-grid">
-          <article className="fumount-intention-card">
-            <img src={intentionsBackground} alt="Sleep intention" loading="lazy" />
-            <div>
-              <h3>Sleep</h3>
-              <p>Ease into quieter evenings and gentle rest rituals.</p>
+        <section
+          className="split-flip-section"
+          id="atmosphere"
+          lang="zh-CN"
+          aria-labelledby="split-flip-heading"
+        >
+          <header className="split-flip-intro">
+            <div className="split-flip-intro__hero" aria-hidden="true">
+              <img
+                src={`${ASSET_BASE}Shoin-Room-Shoji.png`}
+                alt=""
+                width="1600"
+                height="900"
+                decoding="async"
+              />
             </div>
-          </article>
-          <article className="fumount-intention-card">
-            <img src={intentionsBackground} alt="Focus intention" loading="lazy" />
-            <div>
-              <h3>Focus</h3>
-              <p>Create a clear atmosphere for reading, work, and meditation.</p>
-            </div>
-          </article>
-          <article className="fumount-intention-card">
-            <img src={intentionsBackground} alt="Connection intention" loading="lazy" />
-            <div>
-              <h3>Connection</h3>
-              <p>Set the tone for presence, warmth, and meaningful moments.</p>
-            </div>
-          </article>
-        </div>
-      </section>
+            <h2 id="split-flip-heading" className="split-flip-intro__title">
+              天地人香境
+            </h2>
+            <p className="split-flip-intro__line">
+              以有形之香，缔造无形道场；借由内朝圣之路，达成天地人合一。
+            </p>
+            <p className="split-flip-intro__line">
+              一炷香，便是一方移动的道场。
+            </p>
+            <p className="split-flip-intro__line">
+              以香为引，随地结界；以息为观，向内朝圣。
+            </p>
+            <p className="split-flip-intro__line">
+              在呼吸之间，觉知「人」在当下，承接「地」之厚重，感应「天」之清远。
+            </p>
+            <p className="split-flip-intro__line">
+              烟火起处，即是修行；方寸之间，天地人归位。
+            </p>
+          </header>
 
-      <section className="fumount-section" aria-labelledby="brand-values">
-        <header className="fumount-section-header">
-          <p className="fumount-overline">Values</p>
-          <h2 id="brand-values">Crafted with intention</h2>
-        </header>
-        <ul className="fumount-values-list">
-          <li>Natural botanicals, nothing synthetic</li>
-          <li>Handcrafted in small batches</li>
-          <li>Designed for ritual, not routine</li>
-          <li>A slower way to live and breathe</li>
-        </ul>
-      </section>
+          <div className="split-flip-section__grid">
+            <FlipModule
+              ariaLabel="Left gallery slides"
+              images={[
+                `${ASSET_BASE}atmosphere-1.png`,
+                `${ASSET_BASE}atmosphere-2.png`,
+              ]}
+            />
+            <FlipModule
+              ariaLabel="Right gallery slides"
+              images={[
+                `${ASSET_BASE}atmosphere-3.png`,
+                `${ASSET_BASE}atmosphere-4.png`,
+              ]}
+            />
+          </div>
+        </section>
 
-      <section className="fumount-section" aria-labelledby="featured-products">
-        <header className="fumount-section-header">
-          <p className="fumount-overline">Classic & Artisan</p>
-          <h2 id="featured-products">Featured products</h2>
-        </header>
-        <div className="fumount-products-grid">
-          {homepageProducts.map((product) => (
-            <article className="fumount-product-card" key={product.title}>
-              <Link to={product.href} aria-label={`View ${product.title}`}>
-                <img
-                  src={product.image ?? placeholderOne}
-                  alt={product.title}
-                  loading="lazy"
-                />
+        <ImmersiveScroll />
+
+        <section className="rb-section-products" id="shop">
+          <div className="rb-section-products__inner">
+            <h2>Best sellers</h2>
+            <p className="sub">
+              Find your inner peace with our exclusive incense collection.
+            </p>
+
+            <div className="product-grid">
+              {homepageProducts.slice(0, 4).map((product, index) => (
+                <article className="product-card" key={`${product.href}-${product.title}`}>
+                  <Link className="product-card__visual" to={product.href}>
+                    <span className="badge-sale">{product.collection}</span>
+                    <img
+                      src={
+                        product.image ??
+                        `${ASSET_BASE}catalogue-${Math.min(index + 1, 4)}.png`
+                      }
+                      alt={product.title}
+                      width="600"
+                      height="600"
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                  </Link>
+                  <h3>{product.title}</h3>
+                  <p className="product-card__note">{product.intention}</p>
+                  <div className="rb-price">
+                    <ProductPrice price={product.price} />
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="view-all-wrap">
+              <Link className="view-all" to="/collections/all">
+                View all
               </Link>
-              <div className="fumount-product-content">
-                <p className="fumount-product-collection">{product.collection}</p>
-                <h3>{product.title}</h3>
-                <p>{product.intention}</p>
-                <ProductPrice price={product.price} />
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}
+
+function FlipModule({images, ariaLabel}: {images: string[]; ariaLabel: string}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    const timer = window.setInterval(() => {
+      setActiveIndex((index) => (index + 1) % images.length);
+    }, 4500);
+    return () => window.clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="flip-module" data-flip-module>
+      <div className="flip-module__viewport">
+        {images.map((image, index) => (
+          <div
+            className={`flip-module__slide${index === activeIndex ? ' is-active' : ''}`}
+            key={image}
+          >
+            <img
+              src={image}
+              alt=""
+              width="1200"
+              height="1200"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          </div>
+        ))}
+        <div className="flip-module__dots" role="tablist" aria-label={ariaLabel}>
+          {images.map((image, index) => (
+            <button
+              type="button"
+              className={`flip-module__dot${index === activeIndex ? ' is-active' : ''}`}
+              role="tab"
+              aria-selected={index === activeIndex}
+              aria-label={`Image ${index + 1} of ${images.length}`}
+              key={`${image}-dot`}
+              onClick={() => setActiveIndex(index)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImmersiveScroll() {
+  const steps = [
+    ['immersive-panel-1.png', 'Relax & Unwind', '晨光初透，香起無聲。'],
+    ['immersive-panel-2.png', 'Stillness', '一縷煙，萬象寂。'],
+    ['immersive-panel-3.png', 'Depth', '息深處，境自開。'],
+    ['immersive-panel-4.png', 'Sanctuary', '方寸之地，即是道場。'],
+    ['immersive-panel-5.png', 'Return', '天清地寧，人歸於靜。'],
+  ];
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>('[data-immersive-scroll]');
+    if (!root) return;
+    const immersiveRoot = root;
+
+    function update() {
+      const rect = immersiveRoot.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const range = rect.height + vh;
+      const passed = vh - rect.top;
+      setScrollProgress(Math.min(Math.max(passed / range, 0), 1));
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => setInView(entry.isIntersecting));
+      },
+      {threshold: 0.16, rootMargin: '0px 0px -6% 0px'},
+    );
+    observer.observe(immersiveRoot);
+    update();
+    window.addEventListener('scroll', update, {passive: true});
+    window.addEventListener('resize', update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  return (
+    <section
+      className={`immersive-scroll${inView ? ' is-in-view' : ''}`}
+      id="immersive-story"
+      lang="zh-CN"
+      aria-labelledby="immersive-scroll-heading"
+      data-immersive-scroll
+      style={{'--iz-scroll': scrollProgress} as CSSProperties}
+    >
+      <div className="immersive-scroll__field" aria-hidden="true">
+        <div className="immersive-scroll__paper" />
+        <div className="immersive-scroll__frost" />
+        <div className="immersive-scroll__grain" />
+      </div>
+      <div className="immersive-scroll__inner">
+        <h2 id="immersive-scroll-heading" className="visually-hidden">
+          香境行旅
+        </h2>
+        <div className="immersive-scroll__preface">
+          <p className="immersive-scroll__preface-line">
+            烟火起处，即是修行；方寸之间，天地人归位。
+          </p>
+          <p className="immersive-scroll__preface-line immersive-scroll__preface-line--secondary">
+            心系天下，与宇宙同频。
+          </p>
+          <p className="immersive-scroll__preface-line immersive-scroll__preface-line--lead">
+            福山，您的内在朝圣之路
+          </p>
+        </div>
+        <div className="immersive-scroll__row">
+          {steps.map(([image, en, zh], index) => (
+            <article
+              className="immersive-step"
+              data-immersive-step
+              data-step={index + 1}
+              key={image}
+            >
+              <div className="immersive-step__bundle">
+                <figure className="immersive-step__panel">
+                  <img
+                    src={`${ASSET_BASE}${image}`}
+                    alt=""
+                    width="900"
+                    height="1600"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+                <div className="immersive-step__text">
+                  <p className="immersive-step__en">{en}</p>
+                  <p className="immersive-step__zh">{zh}</p>
+                </div>
               </div>
             </article>
           ))}
         </div>
-      </section>
-
-      <section className="fumount-section fumount-ritual" aria-labelledby="ritual-steps">
-        <header className="fumount-section-header">
-          <p className="fumount-overline">Ritual</p>
-          <h2 id="ritual-steps">A simple three-step rhythm</h2>
-        </header>
-        <ol className="fumount-ritual-list">
-          <li>
-            <h3>Light</h3>
-            <p>Begin with intention and let the atmosphere shift.</p>
-          </li>
-          <li>
-            <h3>Breathe</h3>
-            <p>Settle into the scent and return to the present moment.</p>
-          </li>
-          <li>
-            <h3>Settle</h3>
-            <p>Allow stillness to unfold in your space and mind.</p>
-          </li>
-        </ol>
-      </section>
-
-      <section className="fumount-section fumount-story" aria-labelledby="brand-story-preview">
-        <img
-          className="fumount-story-image"
-          src={storyBackground}
-          alt="Fumount brand story atmosphere"
-          loading="lazy"
-        />
-        <div className="fumount-story-content">
-          <p className="fumount-overline">Brand Story</p>
-          <h2 id="brand-story-preview">Rooted in Eastern wisdom, shaped for today.</h2>
-          <p>
-            Fumount is a modern incense brand rooted in Eastern wisdom and
-            refined for contemporary living.
-          </p>
-          <Link className="fumount-btn fumount-btn-secondary" to="/pages/about">
-            Read the Story
-          </Link>
-        </div>
-      </section>
-
-      <footer className="fumount-home-footer" aria-label="Homepage footer links">
-        <Link to="/collections/all">Shop</Link>
-        <Link to="/pages/about">About</Link>
-        <Link to="/pages/ritual">Ritual</Link>
-        <Link to="/pages/contact">Contact</Link>
-        <a href="https://instagram.com" target="_blank" rel="noreferrer">
-          Instagram
-        </a>
-      </footer>
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -270,8 +400,8 @@ function normalizeFeaturedProducts(response: FeaturedProductsQueryResponse) {
       href: `/products/${product.handle}`,
     }));
 
-  const artisanProduct = (response.artisan?.products.nodes ?? [])
-    .slice(0, 1)
+  const artisanProducts = (response.artisan?.products.nodes ?? [])
+    .slice(0, 2)
     .map((product) => ({
       title: product.title,
       intention:
@@ -282,7 +412,7 @@ function normalizeFeaturedProducts(response: FeaturedProductsQueryResponse) {
       href: `/products/${product.handle}`,
     }));
 
-  return [...classicProducts, ...artisanProduct];
+  return [...classicProducts, ...artisanProducts];
 }
 
 function getIntentionCopy(title: string) {

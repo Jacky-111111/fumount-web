@@ -15,6 +15,7 @@ import favicon from '~/assets/福山集Logo_3.png';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import fumountDesignStyles from '~/styles/fumount-design.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
 
@@ -61,6 +62,19 @@ export function links() {
     {
       rel: 'preconnect',
       href: 'https://shop.app',
+    },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.googleapis.com',
+    },
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossOrigin: 'anonymous',
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..72,400;6..72,600&family=Cormorant+SC:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&family=Oswald:wght@200;300;400;500;600&display=swap',
     },
     {rel: 'icon', type: 'image/png', href: favicon},
   ];
@@ -153,6 +167,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={tailwindCss}></link>
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={fumountDesignStyles}></link>
         <Meta />
         <Links />
       </head>

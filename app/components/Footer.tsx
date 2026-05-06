@@ -21,45 +21,56 @@ export function Footer({
         {(footer) => {
           const menu = footer?.menu ?? FALLBACK_FOOTER_MENU;
           const primaryDomainUrl = header.shop.primaryDomain?.url;
-          const shopName = header.shop.name || 'Fumount';
-
-          const shopLinks = menu.items
+          const policyLinks = menu.items
             .map((item) =>
               normalizeMenuLink({item, primaryDomainUrl, publicStoreDomain}),
             )
             .filter(isFooterLink);
 
           return (
-            <footer className="footer" aria-labelledby="footer-brand-title">
-              <div className="footer-container">
-                <section className="footer-brand">
-                  <p className="footer-overline">FUMOUNT</p>
-                  <h2 id="footer-brand-title">{shopName}</h2>
-                  <p>
-                    Luxury incense crafted for modern rituals, intentional living,
-                    and a calmer atmosphere.
-                  </p>
-                </section>
+            <footer className="site-footer-rb">
+              <div className="footer-grid">
+                <div className="footer-brand">
+                  <NavLink className="footer-logo" prefetch="intent" to="/">
+                    <span className="footer-logo__word">Fúmount</span>
+                  </NavLink>
+                  <div className="footer-rule" />
+                  <div className="footer-social">
+                    <a href="https://facebook.com" aria-label="Facebook">
+                      f
+                    </a>
+                    <a href="https://instagram.com" aria-label="Instagram">
+                      in
+                    </a>
+                    <a href="https://youtube.com" aria-label="YouTube">
+                      ▶
+                    </a>
+                    <a href="https://tiktok.com" aria-label="TikTok">
+                      ♪
+                    </a>
+                  </div>
+                  <a href="https://shop.app" className="footer-follow-shop">
+                    Follow on shop
+                  </a>
+                </div>
 
-                <FooterMenuColumn title="Shop" links={shopLinks} />
-                <FooterMenuColumn title="Support" links={SUPPORT_LINKS} />
-                <FooterMenuColumn title="Connect" links={CONNECT_LINKS} />
+                <FooterMenuColumn title="Policies" links={policyLinks} />
+                <FooterMenuColumn title="Find out more" links={MORE_LINKS} />
               </div>
 
-              <div className="footer-legal">
-                <p>© {new Date().getFullYear()} Fumount. All rights reserved.</p>
-                <nav className="footer-legal-links" aria-label="Footer legal links">
-                  <NavLink prefetch="intent" to="/policies/privacy-policy">
-                    Privacy
-                  </NavLink>
-                  <NavLink prefetch="intent" to="/policies/terms-of-service">
-                    Terms
-                  </NavLink>
-                  <NavLink prefetch="intent" to="/policies/shipping-policy">
-                    Shipping
-                  </NavLink>
-                </nav>
+              <div className="footer-pay" aria-hidden="true">
+                <span className="pay-badge">Amex</span>
+                <span className="pay-badge">Apple Pay</span>
+                <span className="pay-badge">Discover</span>
+                <span className="pay-badge">G Pay</span>
+                <span className="pay-badge">Mastercard</span>
+                <span className="pay-badge">Shop Pay</span>
+                <span className="pay-badge">Visa</span>
               </div>
+
+              <p className="footer-copy">
+                © {new Date().getFullYear()}, Fúmount · All rights reserved
+              </p>
             </footer>
           );
         }}
@@ -76,22 +87,24 @@ function FooterMenuColumn({
   links: ReadonlyArray<FooterLink>;
 }) {
   return (
-    <section className="footer-column">
+    <div className="footer-col">
       <h3>{title}</h3>
-      <nav role="navigation" className="footer-menu">
-        {links.map((link) =>
-          link.external ? (
-            <a href={link.url} key={link.id} rel="noopener noreferrer" target="_blank">
-              {link.title}
-            </a>
-          ) : (
-            <NavLink end key={link.id} prefetch="intent" to={link.url}>
-              {link.title}
-            </NavLink>
-          ),
-        )}
-      </nav>
-    </section>
+      <ul>
+        {links.map((link) => (
+          <li key={link.id}>
+            {link.external ? (
+              <a href={link.url} rel="noopener noreferrer" target="_blank">
+                {link.title}
+              </a>
+            ) : (
+              <NavLink end prefetch="intent" to={link.url}>
+                {link.title}
+              </NavLink>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -122,30 +135,16 @@ function isFooterLink(item: FooterLink | null): item is FooterLink {
   return item !== null;
 }
 
-const SUPPORT_LINKS = [
-  {id: 'support-search', title: 'Search', url: '/search', external: false},
-  {id: 'support-account', title: 'Account', url: '/account', external: false},
+const MORE_LINKS = [
+  {id: 'more-about', title: 'About us', url: '/pages/about', external: false},
   {
-    id: 'support-contact',
-    title: 'Contact',
-    url: '/pages/contact',
+    id: 'more-contact',
+    title: 'Contact us',
+    url: '/pages/about#contact-us',
     external: false,
   },
-] as const;
-
-const CONNECT_LINKS = [
-  {
-    id: 'connect-email',
-    title: 'hello@example.com',
-    url: 'mailto:hello@example.com',
-    external: true,
-  },
-  {
-    id: 'connect-instagram',
-    title: 'Instagram',
-    url: 'https://instagram.com',
-    external: true,
-  },
+  {id: 'more-stockists', title: 'Stockists', url: '/pages/contact', external: false},
+  {id: 'more-press', title: 'Press', url: '/blogs/journal', external: false},
 ] as const;
 
 const FALLBACK_FOOTER_MENU: NonNullable<FooterQuery['menu']> = {

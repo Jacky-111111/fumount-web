@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState, type CSSProperties} from 'react';
 import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
@@ -23,20 +23,90 @@ export function Header({
   cart,
   publicStoreDomain,
 }: HeaderProps) {
+  const progress = useHeaderScrollProgress();
   const {shop, menu} = header;
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [language, setLanguage] = useState<'US' | '中文'>('US');
+
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-    </header>
+    <>
+      <p className="announcement">Welcome to Fúmount</p>
+      <header
+        className="site-header"
+        id="siteHeader"
+        style={{'--hdr-progress': progress} as CSSProperties}
+      >
+        <div className="header-stack">
+          <HeaderMenu
+            menu={menu}
+            viewport="desktop"
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            publicStoreDomain={publicStoreDomain}
+          />
+
+          <div className="header-brand-row">
+            <div className="header-brand-left">
+              <SearchToggle />
+              <span className="header-search-underline" aria-hidden="true" />
+            </div>
+
+            <NavLink className="logo" prefetch="intent" to="/" aria-label="Fúmount home">
+              <img
+                className="logo__mark"
+                src="/fumount-design/images/logo.png"
+                alt=""
+                width="240"
+                height="240"
+                decoding="async"
+              />
+              <span className="logo__word">{shop.name || 'Fúmount'}</span>
+            </NavLink>
+
+            <div className="header-tools">
+              <AccountLink isLoggedIn={isLoggedIn} />
+              <span className="header-tools__divider" aria-hidden="true" />
+              <div
+                className={`language-switch${languageOpen ? ' is-open' : ''}`}
+                id="languageSwitch"
+              >
+                <button
+                  type="button"
+                  className="region-pill"
+                  id="languageToggle"
+                  aria-label="Switch language"
+                  aria-haspopup="listbox"
+                  aria-expanded={languageOpen}
+                  onClick={() => setLanguageOpen((open) => !open)}
+                >
+                  {language} <span className="chev" aria-hidden="true">▼</span>
+                </button>
+                <div
+                  className="language-switch__menu"
+                  id="languageMenu"
+                  role="listbox"
+                  aria-label="Available languages"
+                >
+                  <button
+                    type="button"
+                    className="language-switch__option"
+                    role="option"
+                    aria-selected={false}
+                    onClick={() => {
+                      setLanguage(language === 'US' ? '中文' : 'US');
+                      setLanguageOpen(false);
+                    }}
+                  >
+                    {language === 'US' ? '中文' : 'English'}
+                  </button>
+                </div>
+              </div>
+              <span className="header-tools__divider" aria-hidden="true" />
+              <CartToggle cart={cart} />
+            </div>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }
 
@@ -51,88 +121,170 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport}`;
   const {close} = useAside();
+  const items = (menu || FALLBACK_HEADER_MENU).items;
 
-  return (
-    <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
+  if (viewport === 'mobile') {
+    return (
+      <nav className="header-menu-mobile" role="navigation">
+        <NavLink end onClick={close} prefetch="intent" to="/">
           Home
         </NavLink>
-      )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
+        {items.map((item) => {
+          const url = normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain});
+          if (!url) return null;
+          return (
+            <NavLink
+              end
+              key={item.id}
+              onClick={close}
+              prefetch="intent"
+              to={url}
+            >
+              {item.title}
+            </NavLink>
+          );
+        })}
+      </nav>
+    );
+  }
 
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
+  return (
+    <nav className="nav-row" role="navigation" aria-label="Primary">
+      <div className="nav-row__cluster">
+        <div className="nav-collections">
           <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={close}
+            className="nav-collections__trigger nav-row__collections-link"
             prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
+            to="/collections"
           >
-            {item.title}
+            Collections <span className="nav-row__chev" aria-hidden="true">⌵</span>
           </NavLink>
-        );
-      })}
+          <ul className="nav-collections__menu" aria-label="Collections list">
+            {items.slice(0, 4).map((item) => {
+              const url = normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain});
+              if (!url) return null;
+              return (
+                <li key={item.id}>
+                  <NavLink
+                    className="nav-collections__item"
+                    prefetch="intent"
+                    to={url}
+                  >
+                    {item.title}
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div className="nav-row__strip">
+          <NavLink prefetch="intent" to="/collections/all">
+            Gift sets
+          </NavLink>
+          <NavLink prefetch="intent" to="/collections/all">
+            For him
+          </NavLink>
+          <NavLink prefetch="intent" to="/collections/all">
+            For her
+          </NavLink>
+          <NavLink prefetch="intent" to="/collections/all">
+            Best sellers
+          </NavLink>
+          <NavLink prefetch="intent" to="/blogs/journal">
+            Blog
+          </NavLink>
+          <NavLink prefetch="intent" to="/pages/about">
+            Who we are
+          </NavLink>
+          <NavLink prefetch="intent" to="/pages/about#contact-us">
+            Contact
+          </NavLink>
+        </div>
+      </div>
     </nav>
   );
 }
 
-function HeaderCtas({
-  isLoggedIn,
-  cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
-  return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await>
-        </Suspense>
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
-  );
-}
+function useHeaderScrollProgress() {
+  const [progress, setProgress] = useState(0);
 
-function HeaderMenuMobileToggle() {
-  const {open} = useAside();
-  return (
-    <button
-      className="header-menu-mobile-toggle reset"
-      onClick={() => open('mobile')}
-    >
-      <h3>☰</h3>
-    </button>
-  );
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let targetP = 0;
+    let currentP = reduceMotion ? readTargetProgress() : 0;
+    let rafId: number | null = null;
+    const hdrSmooth = 0.072;
+
+    function heroBlendDistance() {
+      return Math.max(window.innerHeight * 0.42, 280);
+    }
+
+    function readTargetProgress() {
+      const d = heroBlendDistance();
+      return Math.min(Math.max(window.scrollY / d, 0), 1);
+    }
+
+    function tick() {
+      rafId = null;
+      if (reduceMotion) {
+        currentP = targetP;
+        setProgress(currentP);
+        return;
+      }
+      const diff = targetP - currentP;
+      if (Math.abs(diff) < 0.0004) {
+        currentP = targetP;
+        setProgress(currentP);
+        return;
+      }
+      currentP += diff * hdrSmooth;
+      setProgress(currentP);
+      rafId = window.requestAnimationFrame(tick);
+    }
+
+    function schedule() {
+      targetP = readTargetProgress();
+      if (rafId == null) rafId = window.requestAnimationFrame(tick);
+    }
+
+    schedule();
+    window.addEventListener('scroll', schedule, {passive: true});
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return progress;
 }
 
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
+    <button
+      type="button"
+      className="header-search-btn icon-btn"
+      aria-label="Search"
+      onClick={() => open('search')}
+    >
+      <SearchIcon />
     </button>
+  );
+}
+
+function AccountLink({isLoggedIn}: Pick<HeaderProps, 'isLoggedIn'>) {
+  return (
+    <NavLink className="icon-btn" prefetch="intent" to="/account" aria-label="Account">
+      <Suspense fallback={<AccountIcon />}>
+        <Await resolve={isLoggedIn} errorElement={<AccountIcon />}>
+          {() => <AccountIcon />}
+        </Await>
+      </Suspense>
+    </NavLink>
   );
 }
 
@@ -142,7 +294,9 @@ function CartBadge({count}: {count: number}) {
 
   return (
     <a
+      className="icon-btn"
       href="/cart"
+      aria-label={`Shopping bag, ${count} items`}
       onClick={(e) => {
         e.preventDefault();
         open('cart');
@@ -154,7 +308,8 @@ function CartBadge({count}: {count: number}) {
         } as CartViewPayload);
       }}
     >
-      Cart <span aria-label={`(items: ${count})`}>{count}</span>
+      <BagIcon />
+      <span className="cart-count">{count}</span>
     </a>
   );
 }
@@ -175,7 +330,51 @@ function CartBanner() {
   return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
-const FALLBACK_HEADER_MENU = {
+function normalizeMenuUrl({
+  item,
+  primaryDomainUrl,
+  publicStoreDomain,
+}: {
+  item: NonNullable<HeaderQuery['menu']>['items'][number];
+  primaryDomainUrl?: string;
+  publicStoreDomain: string;
+}) {
+  if (!item.url) return null;
+  return item.url.includes('myshopify.com') ||
+    item.url.includes(publicStoreDomain) ||
+    (primaryDomainUrl ? item.url.includes(primaryDomainUrl) : false)
+    ? new URL(item.url).pathname
+    : item.url;
+}
+
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m16.5 16.5 4 4" />
+    </svg>
+  );
+}
+
+function AccountIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+    </svg>
+  );
+}
+
+function BagIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6.5 8.5h11l1 12h-13l1-12Z" />
+      <path d="M9 8.5a3 3 0 0 1 6 0" />
+    </svg>
+  );
+}
+
+const FALLBACK_HEADER_MENU: NonNullable<HeaderQuery['menu']> = {
   id: 'gid://shopify/Menu/199655587896',
   items: [
     {
@@ -216,16 +415,3 @@ const FALLBACK_HEADER_MENU = {
     },
   ],
 };
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
-}
