@@ -1386,8 +1386,7 @@ button:not(.reset),
   text-transform: uppercase;
 }
 
-.site-header.site-header {
-  --hdr-progress: 1;
+.site-header.site-header--solid {
   background: #000;
 }
 

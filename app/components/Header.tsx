@@ -1,5 +1,5 @@
 import {Suspense, useEffect, useState, type CSSProperties} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {Await, NavLink, useAsyncValue, useLocation} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -24,7 +24,10 @@ export function Header({
   cart,
   publicStoreDomain,
 }: HeaderProps) {
-  const progress = useHeaderScrollProgress();
+  const location = useLocation();
+  const transparentHeader = usesTransparentHeader(location.pathname);
+  const scrollProgress = useHeaderScrollProgress();
+  const progress = transparentHeader ? scrollProgress : 1;
   const {shop, menu} = header;
   const [languageOpen, setLanguageOpen] = useState(false);
   const {language, toggleLanguage, t} = useLanguage();
@@ -33,7 +36,7 @@ export function Header({
     <>
       <p className="announcement">{t.announcement}</p>
       <header
-        className="site-header"
+        className={`site-header${transparentHeader ? ' site-header--transparent' : ' site-header--solid'}`}
         id="siteHeader"
         style={{'--hdr-progress': progress} as CSSProperties}
       >
@@ -206,6 +209,19 @@ export function HeaderMenu({
         </div>
       </div>
     </nav>
+  );
+}
+
+function usesTransparentHeader(pathname: string) {
+  const normalizedPath = pathname.replace(/^\/|\/$/g, '');
+  const pathWithoutLocale = normalizedPath.replace(
+    /^[a-z]{2}(?:-[a-z]{2})?\//i,
+    '',
+  );
+  return (
+    normalizedPath === '' ||
+    /^[a-z]{2}(?:-[a-z]{2})?$/i.test(normalizedPath) ||
+    pathWithoutLocale === 'pages/about'
   );
 }
 
