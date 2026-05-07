@@ -13,7 +13,7 @@ const STORAGE_KEY = 'fumount-lang';
 
 export const languageCopy = {
   en: {
-    languageButton: 'US',
+    languageButton: 'Eng',
     languageButtonLabel: 'Switch to Chinese',
     languageOption: '中文',
     announcement: 'Welcome to Fúmount',
@@ -105,7 +105,7 @@ export const languageCopy = {
   zh: {
     languageButton: '中文',
     languageButtonLabel: '切换为英文',
-    languageOption: 'English',
+    languageOption: 'Eng',
     announcement: '欢迎来到 Fúmount',
     navAria: '主导航',
     nav: ['系列', '礼盒', '男士', '女士', '畅销', '博客', '关于我们', '联系我们'],
