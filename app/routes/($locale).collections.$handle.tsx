@@ -100,6 +100,8 @@ export default function Collection() {
     {label: 'Best Selling', value: 'BEST_SELLING', reverse: false},
   ];
   const selectedSortValue = `${currentSort.sortKey}:${currentSort.reverse ? 'desc' : 'asc'}`;
+  type CollectionFilter = NonNullable<typeof collection.products.filters>[number];
+  type CollectionFilterValue = CollectionFilter['values'][number];
 
   return (
     <div className="collection">
@@ -107,8 +109,8 @@ export default function Collection() {
       <p className="collection-description">{collection.description}</p>
       <section className="collection-toolbar" aria-label="Collection controls">
         <form className="collection-sort-form" method="get">
-          {appliedFilterInputs.map((filter, index) => (
-            <input key={`${filter}-${index}`} type="hidden" name="filter" value={filter} />
+          {appliedFilterInputs.map((filter) => (
+            <input key={filter} type="hidden" name="filter" value={filter} />
           ))}
           <label htmlFor="collection-sort">Sort by</label>
           <select
@@ -144,11 +146,11 @@ export default function Collection() {
 
       {collection.products.filters?.length ? (
         <section className="collection-filters" aria-label="Collection filters">
-          {collection.products.filters.map((filter) => (
+          {collection.products.filters.map((filter: CollectionFilter) => (
             <div className="collection-filter-group" key={filter.id}>
               <h3>{filter.label}</h3>
               <div className="collection-filter-options">
-                {filter.values.slice(0, 12).map((value) => {
+                {filter.values.slice(0, 12).map((value: CollectionFilterValue) => {
                   const nextSearchParams = new URLSearchParams();
                   nextSearchParams.set('sort', currentSort.sortKey);
                   nextSearchParams.set('reverse', currentSort.reverse ? 'true' : 'false');

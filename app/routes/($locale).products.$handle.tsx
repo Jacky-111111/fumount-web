@@ -95,11 +95,11 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, descriptionHtml} = product;
+  const {title, descriptionHtml, featuredImage} = product;
 
   return (
     <div className="product">
-      <ProductImage image={selectedVariant?.image} />
+      <ProductImage image={selectedVariant?.image ?? featuredImage} />
       <div className="product-main">
         <h1>{title}</h1>
         <ProductPrice
@@ -182,6 +182,13 @@ const PRODUCT_FRAGMENT = `#graphql
     title
     vendor
     handle
+    featuredImage {
+      id
+      url
+      altText
+      width
+      height
+    }
     descriptionHtml
     description
     encodedVariantExistence

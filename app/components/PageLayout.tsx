@@ -14,6 +14,7 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {LanguageProvider, useLanguage} from '~/lib/language';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -33,32 +34,35 @@ export function PageLayout({
   publicStoreDomain,
 }: PageLayoutProps) {
   return (
-    <Aside.Provider>
-      <CartAside cart={cart} />
-      <SearchAside />
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-      {header && (
-        <Header
+    <LanguageProvider>
+      <Aside.Provider>
+        <CartAside cart={cart} />
+        <SearchAside />
+        <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
+        {header && (
+          <Header
+            header={header}
+            cart={cart}
+            isLoggedIn={isLoggedIn}
+            publicStoreDomain={publicStoreDomain}
+          />
+        )}
+        <main>{children}</main>
+        <Footer
+          footer={footer}
           header={header}
-          cart={cart}
-          isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
         />
-      )}
-      <main>{children}</main>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
-    </Aside.Provider>
+      </Aside.Provider>
+    </LanguageProvider>
   );
 }
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
+  const {language} = useLanguage();
   return (
-    <Aside type="cart" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
+    <Aside type="cart" heading={language === 'zh' ? '购物袋' : 'CART'}>
+      <Suspense fallback={<p>{language === 'zh' ? '正在加载购物袋 ...' : 'Loading cart ...'}</p>}>
         <Await resolve={cart}>
           {(cart) => {
             return <CartMain cart={cart} layout="aside" />;
@@ -71,8 +75,9 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 
 function SearchAside() {
   const queriesDatalistId = useId();
+  const {language, t} = useLanguage();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading={language === 'zh' ? '搜索' : 'SEARCH'}>
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
@@ -82,13 +87,13 @@ function SearchAside() {
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
-                placeholder="Search"
+                placeholder={t.searchAria}
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
               />
               &nbsp;
-              <button onClick={goToSearch}>Search</button>
+              <button onClick={goToSearch}>{t.searchAria}</button>
             </>
           )}
         </SearchFormPredictive>
@@ -98,7 +103,7 @@ function SearchAside() {
             const {articles, collections, pages, products, queries} = items;
 
             if (state === 'loading' && term.current) {
-              return <div>Loading...</div>;
+              return <div>{language === 'zh' ? '正在加载...' : 'Loading...'}</div>;
             }
 
             if (!total) {
