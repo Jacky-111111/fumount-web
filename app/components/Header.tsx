@@ -194,7 +194,7 @@ export function HeaderMenu({
           <NavLink prefetch="intent" to="/collections/all">
             {t.nav[4]}
           </NavLink>
-          <NavLink prefetch="intent" to="/blogs/journal">
+          <NavLink prefetch="intent" to="/blogs/news">
             {t.nav[5]}
           </NavLink>
           <NavLink prefetch="intent" to="/pages/about">
@@ -397,7 +397,7 @@ const FALLBACK_HEADER_MENU: NonNullable<HeaderQuery['menu']> = {
       tags: [],
       title: 'Blog',
       type: 'HTTP',
-      url: '/blogs/journal',
+      url: '/blogs/news',
       items: [],
     },
     {

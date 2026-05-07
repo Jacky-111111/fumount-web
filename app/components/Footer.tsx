@@ -158,7 +158,7 @@ const MORE_LINKS = [
     external: false,
   },
   {id: 'more-stockists', title: 'Stockists', url: '/pages/contact', external: false},
-  {id: 'more-press', title: 'Press', url: '/blogs/journal', external: false},
+  {id: 'more-press', title: 'Press', url: '/blogs/news', external: false},
 ] as const;
 
 const FALLBACK_FOOTER_MENU: NonNullable<FooterQuery['menu']> = {
