@@ -946,7 +946,7 @@
 
     .immersive-step:hover .immersive-step__en::after,
     .immersive-step:focus-within .immersive-step__en::after {
-      transform: scaleX(1);
+      transform: scaleX(0);
     }
 
     .immersive-step__zh {
@@ -981,7 +981,7 @@
 
       .immersive-step:hover .immersive-step__en::after,
       .immersive-step:focus-within .immersive-step__en::after {
-        transform: scaleX(1);
+        transform: scaleX(0);
       }
     }
 
@@ -1162,7 +1162,7 @@
 
     .product-card:hover h3::after,
     .product-card:focus-within h3::after {
-      transform: scaleX(1);
+      transform: scaleX(0);
     }
 
     .rb-price {
@@ -1367,8 +1367,7 @@
 
     .footer-copy a {
       color: rgba(255, 255, 255, 0.62);
-      text-decoration: underline;
-      text-underline-offset: 3px;
+      text-decoration: none;
     }
 
     .footer-copy a:hover {
@@ -1469,7 +1468,7 @@
 
       .product-card:hover h3::after,
       .product-card:focus-within h3::after {
-        transform: scaleX(1);
+        transform: scaleX(0);
       }
     }
     .about-page-main {

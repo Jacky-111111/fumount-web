@@ -28,7 +28,7 @@ img {
 * --------------------------------------------------
 */
 .link:hover {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -226,7 +226,7 @@ button.reset:not(:has(> *)) {
 }
 
 button.reset:hover:not(:has(> *)) {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
 }
 
