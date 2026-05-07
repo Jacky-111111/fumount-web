@@ -4,6 +4,7 @@ import type {Route} from './+types/($locale)._index';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {MockShopNotice} from '~/components/MockShopNotice';
 import {ProductPrice} from '~/components/ProductPrice';
+import {useLanguage} from '~/lib/language';
 
 const ASSET_BASE = '/fumount-design/images/';
 
@@ -80,14 +81,16 @@ const fallbackProducts: FeaturedProduct[] = [
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  const {language, t} = useLanguage();
+  const isUsingFallbackProducts = data.featuredProducts.length === 0;
   const homepageProducts =
-    data.featuredProducts.length > 0 ? data.featuredProducts : fallbackProducts;
+    isUsingFallbackProducts ? fallbackProducts : data.featuredProducts;
 
   return (
     <>
       {data.isShopLinked ? null : <MockShopNotice />}
       <main id="collections">
-        <section className="hero-slide" aria-label="Featured campaign">
+        <section className="hero-slide" aria-label={t.heroAria}>
           <div className="hero-slide__media">
             <img
               src={`${ASSET_BASE}rue-home-1.png`}
@@ -98,10 +101,10 @@ export default function Homepage() {
             />
           </div>
           <div className="hero-slide__content">
-            <p className="hero-slide__kicker">New campaign</p>
-            <h1 className="hero-slide__title">The incense collection</h1>
+            <p className="hero-slide__kicker">{t.heroKicker}</p>
+            <h1 className="hero-slide__title">{t.heroTitle}</h1>
             <Link className="btn-shop" to="#shop">
-              Shop now
+              {t.heroCta}
             </Link>
           </div>
         </section>
@@ -109,7 +112,7 @@ export default function Homepage() {
         <section
           className="split-flip-section"
           id="atmosphere"
-          lang="zh-CN"
+          lang={language === 'zh' ? 'zh-CN' : 'en'}
           aria-labelledby="split-flip-heading"
         >
           <header className="split-flip-intro">
@@ -123,35 +126,27 @@ export default function Homepage() {
               />
             </div>
             <h2 id="split-flip-heading" className="split-flip-intro__title">
-              天地人香境
+              {t.splitTitle}
             </h2>
-            <p className="split-flip-intro__line">
-              以有形之香，缔造无形道场；借由内朝圣之路，达成天地人合一。
-            </p>
-            <p className="split-flip-intro__line">
-              一炷香，便是一方移动的道场。
-            </p>
-            <p className="split-flip-intro__line">
-              以香为引，随地结界；以息为观，向内朝圣。
-            </p>
-            <p className="split-flip-intro__line">
-              在呼吸之间，觉知「人」在当下，承接「地」之厚重，感应「天」之清远。
-            </p>
-            <p className="split-flip-intro__line">
-              烟火起处，即是修行；方寸之间，天地人归位。
-            </p>
+            {t.splitLines.map((line) => (
+              <p className="split-flip-intro__line" key={line}>
+                {line}
+              </p>
+            ))}
           </header>
 
           <div className="split-flip-section__grid">
             <FlipModule
-              ariaLabel="Left gallery slides"
+              ariaLabel={t.leftGalleryAria}
+              dotLabels={t.dotLabels}
               images={[
                 `${ASSET_BASE}atmosphere-1.png`,
                 `${ASSET_BASE}atmosphere-2.png`,
               ]}
             />
             <FlipModule
-              ariaLabel="Right gallery slides"
+              ariaLabel={t.rightGalleryAria}
+              dotLabels={t.dotLabels}
               images={[
                 `${ASSET_BASE}atmosphere-3.png`,
                 `${ASSET_BASE}atmosphere-4.png`,
@@ -164,16 +159,14 @@ export default function Homepage() {
 
         <section className="rb-section-products" id="shop">
           <div className="rb-section-products__inner">
-            <h2>Best sellers</h2>
-            <p className="sub">
-              Find your inner peace with our exclusive incense collection.
-            </p>
+            <h2>{t.productsTitle}</h2>
+            <p className="sub">{t.productsSub}</p>
 
             <div className="product-grid">
               {homepageProducts.slice(0, 4).map((product, index) => (
                 <article className="product-card" key={`${product.href}-${product.title}`}>
                   <Link className="product-card__visual" to={product.href}>
-                    <span className="badge-sale">{product.collection}</span>
+                    <span className="badge-sale">{t.badgeSale}</span>
                     <img
                       src={
                         product.image ??
@@ -185,8 +178,14 @@ export default function Homepage() {
                       loading={index === 0 ? 'eager' : 'lazy'}
                     />
                   </Link>
-                  <h3>{product.title}</h3>
-                  <p className="product-card__note">{product.intention}</p>
+                  <h3>
+                    {isUsingFallbackProducts
+                      ? t.productNames[index] ?? product.title
+                      : product.title}
+                  </h3>
+                  <p className="product-card__note">
+                    {t.productNotes[index] ?? product.intention}
+                  </p>
                   <div className="rb-price">
                     <ProductPrice price={product.price} />
                   </div>
@@ -196,7 +195,7 @@ export default function Homepage() {
 
             <div className="view-all-wrap">
               <Link className="view-all" to="/collections/all">
-                View all
+                {t.viewAll}
               </Link>
             </div>
           </div>
@@ -206,7 +205,15 @@ export default function Homepage() {
   );
 }
 
-function FlipModule({images, ariaLabel}: {images: string[]; ariaLabel: string}) {
+function FlipModule({
+  images,
+  ariaLabel,
+  dotLabels,
+}: {
+  images: string[];
+  ariaLabel: string;
+  dotLabels: readonly string[];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -243,7 +250,7 @@ function FlipModule({images, ariaLabel}: {images: string[]; ariaLabel: string}) 
               className={`flip-module__dot${index === activeIndex ? ' is-active' : ''}`}
               role="tab"
               aria-selected={index === activeIndex}
-              aria-label={`Image ${index + 1} of ${images.length}`}
+              aria-label={dotLabels[index] ?? `Image ${index + 1} of ${images.length}`}
               key={`${image}-dot`}
               onClick={() => setActiveIndex(index)}
             />
@@ -255,6 +262,7 @@ function FlipModule({images, ariaLabel}: {images: string[]; ariaLabel: string}) 
 }
 
 function ImmersiveScroll() {
+  const {language, t} = useLanguage();
   const steps = [
     ['immersive-panel-1.png', 'Relax & Unwind', '晨光初透，香起無聲。'],
     ['immersive-panel-2.png', 'Stillness', '一縷煙，萬象寂。'],
@@ -299,7 +307,7 @@ function ImmersiveScroll() {
     <section
       className={`immersive-scroll${inView ? ' is-in-view' : ''}`}
       id="immersive-story"
-      lang="zh-CN"
+      lang={language === 'zh' ? 'zh-CN' : 'en'}
       aria-labelledby="immersive-scroll-heading"
       data-immersive-scroll
       style={{'--iz-scroll': scrollProgress} as CSSProperties}
@@ -311,17 +319,17 @@ function ImmersiveScroll() {
       </div>
       <div className="immersive-scroll__inner">
         <h2 id="immersive-scroll-heading" className="visually-hidden">
-          香境行旅
+          {t.immersiveHeading}
         </h2>
         <div className="immersive-scroll__preface">
           <p className="immersive-scroll__preface-line">
-            烟火起处，即是修行；方寸之间，天地人归位。
+            {t.immersivePreface1}
           </p>
           <p className="immersive-scroll__preface-line immersive-scroll__preface-line--secondary">
-            心系天下，与宇宙同频。
+            {t.immersivePreface2}
           </p>
           <p className="immersive-scroll__preface-line immersive-scroll__preface-line--lead">
-            福山，您的内在朝圣之路
+            {t.immersivePreface3}
           </p>
         </div>
         <div className="immersive-scroll__row">
@@ -344,8 +352,12 @@ function ImmersiveScroll() {
                   />
                 </figure>
                 <div className="immersive-step__text">
-                  <p className="immersive-step__en">{en}</p>
-                  <p className="immersive-step__zh">{zh}</p>
+                  <p className="immersive-step__en">
+                    {t.immersiveSteps[index]?.[0] ?? en}
+                  </p>
+                  <p className="immersive-step__zh">
+                    {t.immersiveSteps[index]?.[1] ?? zh}
+                  </p>
                 </div>
               </div>
             </article>

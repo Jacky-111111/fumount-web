@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {useLanguage} from '~/lib/language';
 
 type FooterLink = {id: string; title: string; url: string; external: boolean};
 
@@ -15,6 +16,8 @@ export function Footer({
   header,
   publicStoreDomain,
 }: FooterProps) {
+  const {t} = useLanguage();
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
@@ -26,6 +29,14 @@ export function Footer({
               normalizeMenuLink({item, primaryDomainUrl, publicStoreDomain}),
             )
             .filter(isFooterLink);
+          const displayedPolicyLinks = policyLinks.map((link, index) => ({
+            ...link,
+            title: t.policyItems[index] ?? link.title,
+          }));
+          const displayedMoreLinks = MORE_LINKS.map((link, index) => ({
+            ...link,
+            title: t.moreItems[index] ?? link.title,
+          }));
 
           return (
             <footer className="site-footer-rb">
@@ -50,12 +61,15 @@ export function Footer({
                     </a>
                   </div>
                   <a href="https://shop.app" className="footer-follow-shop">
-                    Follow on shop
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                      <path d="M12 21s-6.715-4.35-9.192-8.4C.75 9.15 2.85 5.25 7.05 5.25c2.025 0 3.825 1.05 4.95 2.7 1.125-1.65 2.925-2.7 4.95-2.7 4.2 0 6.3 3.9 4.242 7.35C18.715 16.65 12 21 12 21z" />
+                    </svg>
+                    {t.followShop}
                   </a>
                 </div>
 
-                <FooterMenuColumn title="Policies" links={policyLinks} />
-                <FooterMenuColumn title="Find out more" links={MORE_LINKS} />
+                <FooterMenuColumn title={t.policiesTitle} links={displayedPolicyLinks} />
+                <FooterMenuColumn title={t.moreTitle} links={displayedMoreLinks} />
               </div>
 
               <div className="footer-pay" aria-hidden="true">
@@ -69,7 +83,7 @@ export function Footer({
               </div>
 
               <p className="footer-copy">
-                © {new Date().getFullYear()}, Fúmount · All rights reserved
+                © {new Date().getFullYear()} Fúmount · {t.footerCopy}
               </p>
             </footer>
           );

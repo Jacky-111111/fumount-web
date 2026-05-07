@@ -1,6 +1,8 @@
+import {useEffect} from 'react';
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale).pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {useLanguage} from '~/lib/language';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `Fúmount | ${data?.page.title ?? ''}`}];
@@ -87,6 +89,13 @@ export default function Page() {
 }
 
 function AboutPage() {
+  const {language, t} = useLanguage();
+
+  useEffect(() => {
+    document.title =
+      language === 'zh' ? 'Fúmount | 关于我们' : 'Fúmount | About';
+  }, [language]);
+
   return (
     <main className="about-page-main">
       <div className="about-hero-wrap">
@@ -101,44 +110,22 @@ function AboutPage() {
         </figure>
       </div>
 
-      <section className="about-copy" id="about-copy" aria-labelledby="about-heading">
+      <section
+        className="about-copy"
+        id="about-copy"
+        lang={language === 'zh' ? 'zh-CN' : 'en'}
+        aria-labelledby="about-heading"
+      >
         <div className="about-copy__inner">
           <h1 id="about-heading" className="about-copy__title">
-            Who we are
+            {t.aboutTitle}
           </h1>
           <div className="about-copy__body">
-            <p className="about-copy__para">
-              Fúmount uses incense, a tangible medium, to shape an intimate,
-              invisible field for you in every breath.
-            </p>
-            <p className="about-copy__para">
-              This is not about taking from the world; it is a pilgrimage that
-              turns inward.
-            </p>
-            <p className="about-copy__para">
-              Along the way, fragrance clears distraction and steadies the mind,
-              until you can hear your true inner voice and glimpse the wisdom
-              already within you.
-            </p>
-            <p className="about-copy__para">
-              Each lighting is a deep conversation with yourself; each thread of
-              scent is a lamp on the path of growth.
-            </p>
-            <p className="about-copy__para">
-              Fúmount offers no instant answers, only companionship and space, so
-              that amid life&apos;s noise you may walk an inward path and grow in
-              what is real.
-            </p>
-            <p className="about-copy__para">
-              The span of one stick of incense: a quiet ground, and a meeting
-              with who you truly are.
-            </p>
-            <p className="about-copy__para">
-              Fúmount witnesses every inward leap you make. Practice is not on a
-              distant mountain, it lives in each present moment. Fúmount Classics
-              are everyday rituals within reach, helping you settle body and mind
-              quickly and recover your own rhythm in a crowded world.
-            </p>
+            {t.aboutParas.map((paragraph) => (
+              <p className="about-copy__para" key={paragraph}>
+                {paragraph}
+              </p>
+            ))}
           </div>
         </div>
       </section>
@@ -146,15 +133,15 @@ function AboutPage() {
       <section
         className="about-contact"
         id="contact-us"
+        lang={language === 'zh' ? 'zh-CN' : 'en'}
         aria-labelledby="contact-us-heading"
       >
         <div className="about-contact__inner">
           <h2 id="contact-us-heading" className="about-contact__title">
-            Contact us
+            {t.contactHeading}
           </h2>
           <p className="about-contact__placeholder">
-            Placeholder — email, phone, studio hours, and a contact form will
-            appear here.
+            {t.contactPlaceholder}
           </p>
         </div>
       </section>

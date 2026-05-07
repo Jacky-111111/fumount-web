@@ -7,6 +7,7 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {useLanguage} from '~/lib/language';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -26,11 +27,11 @@ export function Header({
   const progress = useHeaderScrollProgress();
   const {shop, menu} = header;
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [language, setLanguage] = useState<'US' | '中文'>('US');
+  const {language, toggleLanguage, t} = useLanguage();
 
   return (
     <>
-      <p className="announcement">Welcome to Fúmount</p>
+      <p className="announcement">{t.announcement}</p>
       <header
         className="site-header"
         id="siteHeader"
@@ -50,7 +51,7 @@ export function Header({
               <span className="header-search-underline" aria-hidden="true" />
             </div>
 
-            <NavLink className="logo" prefetch="intent" to="/" aria-label="Fúmount home">
+            <NavLink className="logo" prefetch="intent" to="/" aria-label={t.logoAria}>
               <img
                 className="logo__mark"
                 src="/fumount-design/images/logo.png"
@@ -73,12 +74,12 @@ export function Header({
                   type="button"
                   className="region-pill"
                   id="languageToggle"
-                  aria-label="Switch language"
+                  aria-label={t.languageButtonLabel}
                   aria-haspopup="listbox"
                   aria-expanded={languageOpen}
                   onClick={() => setLanguageOpen((open) => !open)}
                 >
-                  {language} <span className="chev" aria-hidden="true">▼</span>
+                  {t.languageButton} <span className="chev" aria-hidden="true">▼</span>
                 </button>
                 <div
                   className="language-switch__menu"
@@ -92,11 +93,11 @@ export function Header({
                     role="option"
                     aria-selected={false}
                     onClick={() => {
-                      setLanguage(language === 'US' ? '中文' : 'US');
+                      toggleLanguage();
                       setLanguageOpen(false);
                     }}
                   >
-                    {language === 'US' ? '中文' : 'English'}
+                    {t.languageOption}
                   </button>
                 </div>
               </div>
@@ -122,13 +123,14 @@ export function HeaderMenu({
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
   const {close} = useAside();
+  const {t} = useLanguage();
   const items = (menu || FALLBACK_HEADER_MENU).items;
 
   if (viewport === 'mobile') {
     return (
       <nav className="header-menu-mobile" role="navigation">
         <NavLink end onClick={close} prefetch="intent" to="/">
-          Home
+          {t.languageButton === '中文' ? '首页' : 'Home'}
         </NavLink>
         {items.map((item) => {
           const url = normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain});
@@ -150,7 +152,7 @@ export function HeaderMenu({
   }
 
   return (
-    <nav className="nav-row" role="navigation" aria-label="Primary">
+    <nav className="nav-row" role="navigation" aria-label={t.navAria}>
       <div className="nav-row__cluster">
         <div className="nav-collections">
           <NavLink
@@ -158,10 +160,10 @@ export function HeaderMenu({
             prefetch="intent"
             to="/collections"
           >
-            Collections <span className="nav-row__chev" aria-hidden="true">⌵</span>
+            {t.nav[0]} <span className="nav-row__chev" aria-hidden="true">⌵</span>
           </NavLink>
-          <ul className="nav-collections__menu" aria-label="Collections list">
-            {items.slice(0, 4).map((item) => {
+          <ul className="nav-collections__menu" aria-label={t.collectionListAria}>
+            {items.slice(0, 4).map((item, index) => {
               const url = normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain});
               if (!url) return null;
               return (
@@ -171,7 +173,7 @@ export function HeaderMenu({
                     prefetch="intent"
                     to={url}
                   >
-                    {item.title}
+                    {t.collectionItems[index] ?? item.title}
                   </NavLink>
                 </li>
               );
@@ -181,25 +183,25 @@ export function HeaderMenu({
 
         <div className="nav-row__strip">
           <NavLink prefetch="intent" to="/collections/all">
-            Gift sets
+            {t.nav[1]}
           </NavLink>
           <NavLink prefetch="intent" to="/collections/all">
-            For him
+            {t.nav[2]}
           </NavLink>
           <NavLink prefetch="intent" to="/collections/all">
-            For her
+            {t.nav[3]}
           </NavLink>
           <NavLink prefetch="intent" to="/collections/all">
-            Best sellers
+            {t.nav[4]}
           </NavLink>
           <NavLink prefetch="intent" to="/blogs/journal">
-            Blog
+            {t.nav[5]}
           </NavLink>
           <NavLink prefetch="intent" to="/pages/about">
-            Who we are
+            {t.nav[6]}
           </NavLink>
           <NavLink prefetch="intent" to="/pages/about#contact-us">
-            Contact
+            {t.nav[7]}
           </NavLink>
         </div>
       </div>
@@ -264,11 +266,12 @@ function useHeaderScrollProgress() {
 
 function SearchToggle() {
   const {open} = useAside();
+  const {t} = useLanguage();
   return (
     <button
       type="button"
       className="header-search-btn icon-btn"
-      aria-label="Search"
+      aria-label={t.searchAria}
       onClick={() => open('search')}
     >
       <SearchIcon />
@@ -277,8 +280,9 @@ function SearchToggle() {
 }
 
 function AccountLink({isLoggedIn}: Pick<HeaderProps, 'isLoggedIn'>) {
+  const {t} = useLanguage();
   return (
-    <NavLink className="icon-btn" prefetch="intent" to="/account" aria-label="Account">
+    <NavLink className="icon-btn" prefetch="intent" to="/account" aria-label={t.accountAria}>
       <Suspense fallback={<AccountIcon />}>
         <Await resolve={isLoggedIn} errorElement={<AccountIcon />}>
           {() => <AccountIcon />}
@@ -291,12 +295,13 @@ function AccountLink({isLoggedIn}: Pick<HeaderProps, 'isLoggedIn'>) {
 function CartBadge({count}: {count: number}) {
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
+  const {t} = useLanguage();
 
   return (
     <a
       className="icon-btn"
       href="/cart"
-      aria-label={`Shopping bag, ${count} items`}
+      aria-label={`${t.bagAria}, ${count}`}
       onClick={(e) => {
         e.preventDefault();
         open('cart');
