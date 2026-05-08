@@ -1722,11 +1722,25 @@ form fieldset {
 .account nav a,
 .account-logout button {
   color: var(--fumount-ink) !important;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-product);
   font-size: 11px;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.account nav a:hover {
+  color: var(--fumount-ink);
+  transform: translateY(-1px);
+}
+
+.account-logout {
+  align-items: center;
+  display: inline-flex;
 }
 
 .account-logout button {
@@ -1766,6 +1780,16 @@ form fieldset {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+.account-addresses .address-default-toggle {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.account-addresses .address-default-toggle input[type="checkbox"] {
+  margin: 0;
 }
 
 .account-order table {

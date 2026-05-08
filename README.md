@@ -36,19 +36,31 @@ Current accessible storefront URL:
 npm install
 ```
 
-### Run locally (recommended)
+### Run locally (default storefront work)
 
-Use this if `npm run dev` gets stuck on codegen:
+Use this for regular storefront development (home, product, collection, cart, etc.):
+
+```bash
+npm run dev
+```
+
+If `npm run dev` gets stuck on codegen, run:
 
 ```bash
 npx shopify hydrogen dev
 ```
 
-### Run locally (project script)
+### Run locally for Customer Account routes (`/account`)
+
+Use this when testing login/account pages such as `/account`, `/account/orders`, `/account/profile`.
+Customer Account OAuth does not work on plain `localhost`.
 
 ```bash
-npm run dev
+npx shopify hydrogen dev --customer-account-push
 ```
+
+After startup, open the `https://*.tryhydrogen.dev` tunnel URL shown in the terminal.
+Do not use `http://localhost:3000` for `/account` flows.
 
 ## Build
 
@@ -75,3 +87,4 @@ Typical production workflow:
 If you use `/account` routes, complete the Customer Account API setup:
 
 - <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
+- Use `npx shopify hydrogen dev --customer-account-push` during local development for `/account` routes.

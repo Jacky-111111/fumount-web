@@ -485,11 +485,11 @@ export function AddressForm({
           defaultValue={address?.phoneNumber ?? ''}
           id="phoneNumber"
           name="phoneNumber"
-          placeholder="+16135551111"
+          placeholder="+11234567890"
           pattern="^\+?[1-9]\d{3,14}$"
           type="tel"
         />
-        <div>
+        <div className="address-default-toggle">
           <input
             defaultChecked={isDefaultAddress}
             id="defaultAddress"
