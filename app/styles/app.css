@@ -397,6 +397,19 @@ aside li {
   padding: 8px 10px;
 }
 
+.overlay[data-aside-type='cart'] .cart-line-quantity form {
+  background: transparent;
+  border: 0;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-quantity form button {
+  height: 100%;
+  width: 100%;
+}
+
 .overlay[data-aside-type='cart'] .cart-line-remove-btn {
   justify-self: start;
 }
