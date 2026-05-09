@@ -231,6 +231,39 @@ aside li {
   height: calc(100vh - var(--cart-aside-top-offset));
 }
 
+.overlay[data-aside-type='search'] aside {
+  top: var(--cart-aside-top-offset);
+  height: calc(100vh - var(--cart-aside-top-offset));
+}
+
+.overlay[data-aside-type='search'] .predictive-search-form {
+  align-items: stretch;
+  display: flex;
+  gap: 8px;
+  line-height: 0;
+}
+
+.overlay[data-aside-type='search'] .predictive-search-form input[type='search'] {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  height: 42px;
+  margin: 0;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+.overlay[data-aside-type='search'] .predictive-search-form button {
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 42px;
+  justify-content: center;
+  margin: 0;
+  min-height: 42px;
+  padding: 0 16px;
+}
+
 .overlay.expanded[data-aside-type='cart'] aside {
   transform: translateX(
     calc((var(--aside-width) + var(--cart-aside-inset-left)) * -1)
@@ -1535,6 +1568,13 @@ button:not(.reset):hover,
   background: transparent;
   color: var(--fumount-ink);
   transform: translateY(-1px);
+}
+
+/* Keep checkout text visible inside cart CTA links */
+.cart-summary-page a p,
+.cart-summary-aside a p {
+  color: inherit;
+  margin: 0;
 }
 
 input:not([type="checkbox"]),
