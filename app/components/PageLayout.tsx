@@ -169,6 +169,7 @@ function MobileMenuAside({
       <Aside type="mobile" heading="MENU">
         <HeaderMenu
           menu={header.menu}
+          collections={header.collections}
           viewport="mobile"
           primaryDomainUrl={header.shop.primaryDomain.url}
           publicStoreDomain={publicStoreDomain}

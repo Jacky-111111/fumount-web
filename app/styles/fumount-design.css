@@ -270,6 +270,16 @@
       min-height: var(--header-nav-h);
     }
 
+    .nav-collections::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: max(100%, 220px);
+      height: 12px;
+      pointer-events: auto;
+    }
+
     .nav-collections__trigger {
       display: inline-flex;
       align-items: center;
@@ -278,7 +288,7 @@
 
     .nav-collections__menu {
       position: absolute;
-      top: calc(100% + 10px);
+      top: calc(100% + 4px);
       left: auto;
       right: 0;
       min-width: 220px;
@@ -294,10 +304,11 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(-4px);
-      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
       z-index: 1260;
     }
 
+    .nav-collections.is-open .nav-collections__menu,
     .nav-collections:hover .nav-collections__menu,
     .nav-collections:focus-within .nav-collections__menu {
       opacity: 1;

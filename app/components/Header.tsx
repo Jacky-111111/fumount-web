@@ -1,4 +1,12 @@
-import {Suspense, useEffect, useState, type CSSProperties} from 'react';
+import {
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FocusEvent as ReactFocusEvent,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import {Await, NavLink, useAsyncValue, useLocation} from 'react-router';
 import {
   type CartViewPayload,
@@ -17,6 +25,7 @@ interface HeaderProps {
 }
 
 type Viewport = 'desktop' | 'mobile';
+type PointerPosition = {x: number; y: number};
 
 export function Header({
   header,
@@ -43,6 +52,7 @@ export function Header({
         <div className="header-stack">
           <HeaderMenu
             menu={menu}
+            collections={header.collections}
             viewport="desktop"
             primaryDomainUrl={header.shop.primaryDomain.url}
             publicStoreDomain={publicStoreDomain}
@@ -116,11 +126,13 @@ export function Header({
 
 export function HeaderMenu({
   menu,
+  collections,
   primaryDomainUrl,
   viewport,
   publicStoreDomain,
 }: {
   menu: HeaderProps['header']['menu'];
+  collections: HeaderProps['header']['collections'];
   primaryDomainUrl: HeaderProps['header']['shop']['primaryDomain']['url'];
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
@@ -128,6 +140,114 @@ export function HeaderMenu({
   const {close} = useAside();
   const {t} = useLanguage();
   const items = (menu || FALLBACK_HEADER_MENU).items;
+  const dynamicCollections = collections?.nodes ?? [];
+  const [isCollectionsOpen, setIsCollectionsOpen] = useState(false);
+  const collectionsRef = useRef<HTMLDivElement | null>(null);
+  const collectionsMenuRef = useRef<HTMLUListElement | null>(null);
+  const closeTimerRef = useRef<number | null>(null);
+  const prevPointerRef = useRef<PointerPosition | null>(null);
+  const latestPointerRef = useRef<PointerPosition | null>(null);
+  const latestPointerAtRef = useRef(0);
+  const collectionLinks = dynamicCollections.map((collection) => ({
+    id: collection.id,
+    title: collection.title,
+    to: `/collections/${collection.handle}`,
+  }));
+  const dropdownCollections =
+    collectionLinks.length > 0
+      ? collectionLinks
+      : items.slice(0, 4).map((item) => ({
+          id: item.id,
+          title: item.title,
+          to: normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain}),
+        }));
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current != null) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
+
+  function clearCloseTimer() {
+    if (closeTimerRef.current == null) return;
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  }
+
+  function openCollectionsMenu() {
+    clearCloseTimer();
+    setIsCollectionsOpen(true);
+  }
+
+  function closeCollectionsMenu() {
+    clearCloseTimer();
+    setIsCollectionsOpen(false);
+  }
+
+  function trackPointer(event: ReactMouseEvent<HTMLElement>) {
+    prevPointerRef.current = latestPointerRef.current;
+    latestPointerRef.current = {x: event.clientX, y: event.clientY};
+    latestPointerAtRef.current = Date.now();
+  }
+
+  function distanceToRect(point: PointerPosition, rect: DOMRect) {
+    const dx = Math.max(rect.left - point.x, 0, point.x - rect.right);
+    const dy = Math.max(rect.top - point.y, 0, point.y - rect.bottom);
+    return Math.hypot(dx, dy);
+  }
+
+  function isPointerMovingTowardMenu() {
+    const rect = collectionsMenuRef.current?.getBoundingClientRect();
+    const previous = prevPointerRef.current;
+    const current = latestPointerRef.current;
+    if (!rect || !previous || !current) return false;
+    if (Date.now() - latestPointerAtRef.current > 120) return false;
+
+    if (
+      current.x >= rect.left &&
+      current.x <= rect.right &&
+      current.y >= rect.top &&
+      current.y <= rect.bottom
+    ) {
+      return true;
+    }
+
+    const movingDown = current.y >= previous.y - 1;
+    if (!movingDown) return false;
+    const closeToMenuZone =
+      current.x >= rect.left - 60 &&
+      current.x <= rect.right + 60 &&
+      current.y <= rect.bottom + 24;
+    if (!closeToMenuZone) return false;
+
+    const prevDistance = distanceToRect(previous, rect);
+    const currentDistance = distanceToRect(current, rect);
+    return currentDistance <= prevDistance + 3;
+  }
+
+  function scheduleClose(delayMs = 180, retries = 0) {
+    clearCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      if (isPointerMovingTowardMenu() && retries < 2) {
+        scheduleClose(120, retries + 1);
+        return;
+      }
+      closeCollectionsMenu();
+    }, delayMs);
+  }
+
+  function handleCollectionsBlur(event: ReactFocusEvent<HTMLDivElement>) {
+    const nextTarget = event.relatedTarget;
+    if (
+      nextTarget instanceof Node &&
+      collectionsRef.current?.contains(nextTarget)
+    ) {
+      return;
+    }
+    scheduleClose(120);
+  }
 
   if (viewport === 'mobile') {
     return (
@@ -157,26 +277,45 @@ export function HeaderMenu({
   return (
     <nav className="nav-row" role="navigation" aria-label={t.navAria}>
       <div className="nav-row__cluster">
-        <div className="nav-collections">
+        <div
+          className={`nav-collections${isCollectionsOpen ? ' is-open' : ''}`}
+          ref={collectionsRef}
+          onMouseEnter={openCollectionsMenu}
+          onMouseMove={trackPointer}
+          onMouseLeave={() => scheduleClose()}
+          onFocusCapture={openCollectionsMenu}
+          onBlurCapture={handleCollectionsBlur}
+        >
           <NavLink
             className="nav-collections__trigger nav-row__collections-link"
             prefetch="intent"
             to="/collections"
+            aria-expanded={isCollectionsOpen}
+            aria-haspopup="menu"
           >
             {t.nav[0]} <span className="nav-row__chev" aria-hidden="true">⌵</span>
           </NavLink>
-          <ul className="nav-collections__menu" aria-label={t.collectionListAria}>
-            {items.slice(0, 4).map((item, index) => {
-              const url = normalizeMenuUrl({item, primaryDomainUrl, publicStoreDomain});
-              if (!url) return null;
+          <ul
+            className="nav-collections__menu"
+            aria-label={t.collectionListAria}
+            ref={collectionsMenuRef}
+            role="menu"
+            onMouseEnter={openCollectionsMenu}
+            onMouseMove={trackPointer}
+            onMouseLeave={() => scheduleClose()}
+          >
+            {dropdownCollections.map((item) => {
+              if (!item.to) return null;
               return (
                 <li key={item.id}>
                   <NavLink
                     className="nav-collections__item"
                     prefetch="intent"
-                    to={url}
+                    to={item.to}
+                    role="menuitem"
+                    onClick={closeCollectionsMenu}
                   >
-                    {t.collectionItems[index] ?? item.title}
+                    {item.title}
                   </NavLink>
                 </li>
               );
