@@ -110,6 +110,12 @@ img {
   }
 }
 
+html:has(.overlay.expanded[data-aside-type='cart']),
+body:has(.overlay.expanded[data-aside-type='cart']) {
+  height: 100dvh;
+  overflow: hidden;
+}
+
 aside {
   background: var(--color-light);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
@@ -231,6 +237,7 @@ aside li {
   display: flex;
   flex-direction: column;
   height: calc(100dvh - var(--cart-aside-top-offset));
+  overscroll-behavior: contain;
   right: calc(-1 * var(--cart-aside-width));
   top: var(--cart-aside-top-offset);
   width: var(--cart-aside-width);
@@ -270,6 +277,7 @@ aside li {
 .overlay[data-aside-type='cart'] .cart-lines {
   flex: 1 1 auto;
   min-height: 0;
+  overscroll-behavior: contain;
   overflow-y: auto;
   padding: 1rem 1.2rem 1.1rem;
 }
