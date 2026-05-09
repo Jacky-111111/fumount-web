@@ -293,18 +293,31 @@ aside li {
   border-top: 1px solid rgba(17, 17, 17, 0.16);
   box-sizing: border-box;
   margin-top: auto;
-  padding: 1rem 1.2rem 1.2rem;
+  padding: 0.85rem 1.2rem 0.95rem;
   position: relative;
   width: 100%;
 }
 
 .overlay[data-aside-type='cart'] .cart-subtotal {
   justify-content: space-between;
-  margin: 0 0 0.9rem;
+  margin: 0 0 0.55rem;
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section {
+  margin: 0;
+  padding: 0;
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section + section {
+  margin-top: 0.55rem;
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section form {
+  margin: 0;
 }
 
 .overlay[data-aside-type='cart'] .cart-checkout-actions {
-  margin-top: 1rem;
+  margin-top: 0.7rem;
 }
 
 .overlay[data-aside-type='cart'] .cart-checkout-link {
