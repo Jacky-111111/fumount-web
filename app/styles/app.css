@@ -2,6 +2,11 @@
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
+  --cart-aside-top-offset: calc(
+    var(--announce-h, 0px) + var(--header-nav-h, 0px) + var(--header-brand-compact, 0px)
+  );
+  --cart-aside-inset-left: clamp(15px, 2.2vw, 40px);
+  --cart-aside-content-right-gap: clamp(8px, 1.8vw, 16px);
   --grid-item-width: 355px;
   --header-height: 64px;
   --color-dark: #000;
@@ -218,6 +223,98 @@ aside li {
 /* reveal aside */
 .overlay.expanded aside {
   transform: translateX(calc(var(--aside-width) * -1));
+}
+
+/* cart drawer only: move below header and inset from right edge */
+.overlay[data-aside-type='cart'] aside {
+  top: var(--cart-aside-top-offset);
+  height: calc(100vh - var(--cart-aside-top-offset));
+}
+
+.overlay.expanded[data-aside-type='cart'] aside {
+  transform: translateX(
+    calc((var(--aside-width) + var(--cart-aside-inset-left)) * -1)
+  );
+}
+
+.overlay[data-aside-type='cart'] .close-outside {
+  width: calc(100% - var(--aside-width) - var(--cart-aside-inset-left));
+}
+
+.overlay[data-aside-type='cart']::after {
+  content: '';
+  position: absolute;
+  top: var(--cart-aside-top-offset);
+  right: 0;
+  width: var(--cart-aside-inset-left);
+  height: calc(100vh - var(--cart-aside-top-offset));
+  background: var(--fumount-panel, var(--color-light));
+  pointer-events: none;
+}
+
+.overlay[data-aside-type='cart'] aside main {
+  margin: 1rem calc(1rem + var(--cart-aside-content-right-gap)) 1rem 1rem;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-quantity {
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-quantity small {
+  margin-right: 0;
+  white-space: nowrap;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-quantity button {
+  flex: 0 0 auto;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  min-height: 34px;
+  padding: 8px 10px;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-inner > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.overlay[data-aside-type='cart'] .cart-line-inner > div p {
+  overflow-wrap: anywhere;
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside {
+  box-sizing: border-box;
+  width: calc(
+    var(--aside-width) - 40px - var(--cart-aside-content-right-gap)
+  );
+}
+
+.overlay[data-aside-type='cart'] .cart-subtotal {
+  padding-right: var(--cart-aside-content-right-gap);
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section form > div {
+  align-items: stretch;
+  display: flex;
+  gap: 8px;
+  padding-right: var(--cart-aside-content-right-gap);
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section form > div input {
+  flex: 1 1 auto;
+  height: 42px;
+  margin: 0;
+  min-width: 0;
+  width: auto;
+}
+
+.overlay[data-aside-type='cart'] .cart-summary-aside section form > div button {
+  flex: 0 0 auto;
+  height: 42px;
+  margin: 0;
+  min-height: 42px;
 }
 
 button.reset {
